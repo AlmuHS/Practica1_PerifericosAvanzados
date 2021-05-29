@@ -2,7 +2,7 @@
 long tiempo = 0;
 long cuenta = 0;
 
-const int LDR = A5;
+const int LDR = A0;
 const int MAX_LUZ = 950;
 
 
@@ -20,21 +20,23 @@ void loop() {
   int rebote;
 
   Serial.println(analogRead(LDR));
-  // Espera hasta que el pulsador vale HIGH
-  while (analogRead(LDR) < MAX_LUZ);
+  
+  // Espera hasta que se corte el foco de luz
+  while (analogRead(LDR) >= MAX_LUZ);
+  
   // Incrementa el contador
   cuenta++;
   tiempo = millis();
-
-  
   
   // Se genera la cadena a enviar
   sprintf(cadena, "Cuenta: %d; Tiempo: %lu", cuenta, tiempo);
   Serial.println(cadena);
 
+  // Espera a que se estabilice el valor
   rebote = millis();
   while(millis()-rebote < 20);
-  // Se espera a que se suelte el pulsador
-  while(digitalRead(LDR) >= MAX_LUZ);
+  
+  // Se espera a que vuelva a subir la luz
+  while(digitalRead(LDR) < MAX_LUZ);
 
 }
